@@ -20,10 +20,7 @@ public class Board {
     }
 
     public void move(Square source, Square destination) {
-        Piece sourcePiece = board.get(source);
-        Piece destinationPiece = board.get(destination);
-
-        turn = turn.checkMovable(board, source, destination, sourcePiece, destinationPiece);
+        turn = turn.checkMovable(board, source, destination);
 
         moveOrCatch(source, destination);
     }

@@ -17,7 +17,10 @@ public class WhiteTurn implements Turn {
     protected static final String PATH_BLOCKED_ERROR = "막힌 경로입니다.";
 
     @Override
-    public Turn checkMovable(Map<Square, Piece> board, Square source, Square destination, Piece sourcePiece, Piece destinationPiece) {
+    public Turn checkMovable(Map<Square, Piece> board, Square source, Square destination) {
+        Piece sourcePiece = board.get(source);
+        Piece destinationPiece = board.get(destination);
+
         if (sourcePiece.isBlack()) {
             throw new IllegalArgumentException(NOT_YOUR_TURN_ERROR);
         }
