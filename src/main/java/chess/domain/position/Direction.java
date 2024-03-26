@@ -9,10 +9,10 @@ public enum Direction {
     RIGHT((diff) -> diff.fileDiff() > 0 && diff.rankDiff() == 0, 1, 0),
     UP((diff) -> diff.fileDiff() == 0 && diff.rankDiff() > 0, 0, 1),
     DOWN((diff) -> diff.fileDiff() == 0 && diff.rankDiff() < 0, 0, -1),
-    LEFT_UP((diff) -> diff.fileDiff() < 0 && diff.rankDiff() > 0, -1, 1),
-    RIGHT_UP((diff) -> diff.fileDiff() > 0 && diff.rankDiff() > 0, 1, 1),
-    LEFT_DOWN((diff) -> diff.fileDiff() < 0 && diff.rankDiff() < 0, -1, -1),
-    RIGHT_DOWN((diff) -> diff.fileDiff() > 0 && diff.rankDiff() < 0, 1, -1),
+    LEFT_UP((diff) -> diff.fileDiff() < 0 && diff.rankDiff() > 0, LEFT.fileIndex, UP.rankIndex),
+    RIGHT_UP((diff) -> diff.fileDiff() > 0 && diff.rankDiff() > 0, RIGHT.fileIndex, UP.rankIndex),
+    LEFT_DOWN((diff) -> diff.fileDiff() < 0 && diff.rankDiff() < 0, LEFT.fileIndex, DOWN.rankIndex),
+    RIGHT_DOWN((diff) -> diff.fileDiff() > 0 && diff.rankDiff() < 0, RIGHT.fileIndex, DOWN.rankIndex),
     ;
 
     private final Predicate<SquareDifferent> directionCondition;
