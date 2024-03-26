@@ -42,4 +42,12 @@ public class Board {
     public Piece findPieceBySquare(Square square) {
         return board.get(square);
     }
+
+    public boolean isKingAlive() {
+        long kingCount =  board.values().stream()
+                .filter(Piece::isKing)
+                .count();
+
+        return kingCount == 2;
+    }
 }

@@ -136,4 +136,14 @@ public class BoardTest {
         assertThatThrownBy(() -> board.move(Square.of(File.G, Rank.FOUR), Square.of(File.G, Rank.FIVE)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("체스판은 King 존재 여부를 반환한다.")
+    void kingDead() {
+        // given
+        Board board = new Board(new BoardFactory().create());
+
+        // when & then
+        assertThat(board.isKingAlive()).isTrue();
+    }
 }
