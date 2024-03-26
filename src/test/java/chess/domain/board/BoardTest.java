@@ -18,14 +18,14 @@ public class BoardTest {
     @Test
     void createBoard() {
         // when & then
-        assertThatCode(Board::new).doesNotThrowAnyException();
+        assertThatCode(() -> new Board(new BoardFactory().create())).doesNotThrowAnyException();
     }
 
     @DisplayName("체스판은 목적지에 같은 색의 말이 있으면 예외를 반환한다.")
     @Test
     void checkPieceSameColor() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         Square source = Square.of(File.A, Rank.EIGHT);
         Square destination = Square.of(File.A, Rank.SEVEN);
 
@@ -37,7 +37,7 @@ public class BoardTest {
     @Test
     void move() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         Square source = Square.of(File.A, Rank.TWO);
         Square destination = Square.of(File.A, Rank.THREE);
 
@@ -49,7 +49,7 @@ public class BoardTest {
     @Test
     void checkPathBlocked() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         Square source = Square.of(File.A, Rank.EIGHT);
         Square destination = Square.of(File.A, Rank.FIVE);
 
@@ -61,7 +61,7 @@ public class BoardTest {
     @Test
     void checkPathNotBlocked() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         Square source = Square.of(File.A, Rank.TWO);
         Square destination = Square.of(File.A, Rank.FOUR);
 
@@ -73,7 +73,7 @@ public class BoardTest {
     @Test
     void checkCannotMove() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         Square source = Square.of(File.B, Rank.EIGHT);
         Square destination = Square.of(File.C, Rank.THREE);
 
@@ -85,7 +85,7 @@ public class BoardTest {
     @Test
     void checkCanMove() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         Square source = Square.of(File.B, Rank.ONE);
         Square destination = Square.of(File.C, Rank.THREE);
 
@@ -97,7 +97,7 @@ public class BoardTest {
     @Test
     void checkTurn() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         Square source = Square.of(File.B, Rank.SEVEN);
         Square destination = Square.of(File.C, Rank.SIX);
 
@@ -109,7 +109,7 @@ public class BoardTest {
     @Test
     void catchOpponent() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         board.move(Square.of(File.G, Rank.TWO), Square.of(File.G, Rank.FOUR));
         board.move(Square.of(File.H, Rank.SEVEN), Square.of(File.H, Rank.FIVE));
 
@@ -128,7 +128,7 @@ public class BoardTest {
     @Test
     void pawnStraightCatch() {
         // given
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         board.move(Square.of(File.G, Rank.TWO), Square.of(File.G, Rank.FOUR));
         board.move(Square.of(File.G, Rank.SEVEN), Square.of(File.G, Rank.FIVE));
 
