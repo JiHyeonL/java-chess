@@ -24,6 +24,10 @@ public enum GameStatus {
                 .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND));
     }
 
+    public boolean isGamingCommand() {
+        return this.equals(MOVE) || this.equals(END);
+    }
+
     public String value() {
         return value;
     }

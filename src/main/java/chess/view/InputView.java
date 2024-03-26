@@ -23,18 +23,18 @@ public class InputView {
         this.scanner = new Scanner(System.in);
     }
 
-    public UserCommand readProgressCommand() {
+    public UserCommand readStartCommand() {
         System.out.println(CHESS_GAME_TITLE);
 
         GameStatus status = GameStatus.findByValue(scanner.nextLine());
 
-        validateIsProgressCommand(status);
+        validateIsStartCommand(status);
 
         return new UserCommand(status);
     }
 
-    private void validateIsProgressCommand(GameStatus status) {
-        if (!List.of(GameStatus.START, GameStatus.END).contains(status)) {
+    private void validateIsStartCommand(GameStatus status) {
+        if (!status.equals(GameStatus.START)) {
             throw new IllegalArgumentException(COMMAND_ERROR_MESSAGE);
         }
     }
@@ -54,7 +54,7 @@ public class InputView {
     }
 
     private void validateIsEndOrMove(GameStatus status) {
-        if (!List.of(GameStatus.MOVE, GameStatus.END).contains(status)) {
+        if (!status.isGamingCommand()) {
             throw new IllegalArgumentException(INVALID_COMMAND_ERROR);
         }
     }

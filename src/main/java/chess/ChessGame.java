@@ -20,7 +20,7 @@ public class ChessGame {
     }
 
     public void play() {
-        UserCommand command = RetryUtil.retryUntilNoException(inputView::readProgressCommand);
+        UserCommand command = RetryUtil.retryUntilNoException(inputView::readStartCommand);
 
         if (!isStart(command)) {
             return;
