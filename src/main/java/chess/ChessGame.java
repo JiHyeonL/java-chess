@@ -63,8 +63,8 @@ public class ChessGame {
     }
 
     private void movePiece(Board board, UserCommand command) {
-        Square source = Square.findByName(command.source());
-        Square destination = Square.findByName(command.destination());
+        Square source = command.squareSource();
+        Square destination = command.squareDestination();
 
         board.move(source, destination);
     }
