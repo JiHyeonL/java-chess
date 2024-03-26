@@ -2,7 +2,7 @@ package chess;
 
 import chess.domain.board.Board;
 import chess.domain.board.BoardFactory;
-import chess.domain.board.BoardOutput;
+import chess.view.BoardOutput;
 import chess.domain.position.Square;
 import chess.util.RetryUtil;
 import chess.view.GameStatus;

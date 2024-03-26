@@ -1,5 +1,6 @@
-package chess.domain.board;
+package chess.view;
 
+import chess.domain.board.Board;
 import chess.domain.piece.Piece;
 import chess.domain.position.File;
 import chess.domain.position.Rank;

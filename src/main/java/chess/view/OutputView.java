@@ -1,7 +1,5 @@
 package chess.view;
 
-import chess.domain.board.BoardOutput;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
