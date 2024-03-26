@@ -14,8 +14,8 @@ public class Board {
     private final Map<Square, Piece> board;
     private Turn turn;
 
-    public Board() {
-        this.board = new BoardFactory().create();
+    public Board(Map<Square, Piece> board) {
+        this.board = board;
         this.turn = new WhiteTurn();
     }
 

@@ -1,6 +1,7 @@
 package chess;
 
 import chess.domain.board.Board;
+import chess.domain.board.BoardFactory;
 import chess.domain.board.BoardOutput;
 import chess.domain.position.Square;
 import chess.util.RetryUtil;
@@ -26,7 +27,7 @@ public class ChessGame {
             return;
         }
 
-        Board board = new Board();
+        Board board = new Board(new BoardFactory().create());
         outputView.writeBoard(BoardOutput.of(board));
 
         playUntilEnd(board);
