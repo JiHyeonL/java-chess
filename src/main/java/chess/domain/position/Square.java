@@ -61,4 +61,8 @@ public class Square {
     public boolean isPawnStartSquare() {
         return rank.equals(Rank.TWO) || rank.equals(Rank.SEVEN);
     }
+
+    public boolean matchesFile(Square square) {
+        return file.symbol().equals(square.file.symbol());
+    }
 }

@@ -1,6 +1,7 @@
 package chess.domain.piece;
 
 import chess.domain.position.Square;
+import chess.domain.score.Score;
 
 public class Piece {
 
@@ -24,6 +25,10 @@ public class Piece {
         return pieceType.equals(PieceType.KING);
     }
 
+    public boolean isPawn() {
+        return pieceType.equals(PieceType.PAWN);
+    }
+
     public boolean matches(String pieceViewName) {
         return pieceType.name().equals(pieceViewName);
     }
@@ -42,5 +47,9 @@ public class Piece {
 
     public boolean canMove(Square source, Square destination) {
         return pieceType.canMove(source, destination, colorType);
+    }
+
+    public double score() {
+        return Score.value(pieceType);
     }
 }

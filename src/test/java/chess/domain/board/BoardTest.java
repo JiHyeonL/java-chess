@@ -146,4 +146,56 @@ public class BoardTest {
         // when & then
         assertThat(board.isKingAlive()).isTrue();
     }
+
+    @Test
+    @DisplayName("체스판 초기 점수는 38이다.")
+    void initScore() {
+        // given
+        Board board = new Board(new BoardFactory().create());
+
+        // when
+        double blackScore = board.blackTotalScore();
+        double whiteScore = board.whiteTotalScore();
+
+        // then
+        assertThat(blackScore).isEqualTo(38);
+        assertThat(whiteScore).isEqualTo(38);
+    }
+
+    @Test
+    @DisplayName("체스판은 보드 결과를 바탕으로 검은 말 점수를 계산한 결과를 반환한다.")
+    void blackScore() {
+        // given
+        Board board = new Board(new BoardFactory().create());
+        board.move(Square.of(File.G, Rank.TWO), Square.of(File.G, Rank.FOUR));
+        board.move(Square.of(File.H, Rank.SEVEN), Square.of(File.H, Rank.FIVE));
+
+        board.move(Square.of(File.G, Rank.FOUR), Square.of(File.H, Rank.FIVE));
+        board.move(Square.of(File.H, Rank.EIGHT), Square.of(File.H, Rank.FIVE));
+
+        // when
+        double score = board.blackTotalScore();
+
+        // then
+        assertThat(score).isEqualTo(37);
+    }
+
+    @Test
+    @DisplayName("체스판은 보드 결과를 바탕으로 흰 말 점수를 계산한 결과를 반환한다.")
+    void whiteScore() {
+        // given
+        Board board = new Board(new BoardFactory().create());
+        board.move(Square.of(File.G, Rank.TWO), Square.of(File.G, Rank.FOUR));
+        board.move(Square.of(File.H, Rank.SEVEN), Square.of(File.H, Rank.FIVE));
+
+        board.move(Square.of(File.G, Rank.FOUR), Square.of(File.H, Rank.FIVE));
+
+        // when
+        double whiteScore = board.whiteTotalScore();
+        double blackScore = board.blackTotalScore();
+
+        // then
+        assertThat(whiteScore).isEqualTo(37);
+        assertThat(blackScore).isEqualTo(37);
+    }
 }
