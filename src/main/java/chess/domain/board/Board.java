@@ -30,16 +30,8 @@ public class Board {
 
     private void moveOrCatch(Square source, Square destination) {
         Piece sourcePiece = board.get(source);
-        Piece destinationPiece = board.get(destination);
 
-        // TODO: 조건문 삭제(source를 empty로 하면 같음)
-        if (destinationPiece.isNotEmpty()) {
-            board.replace(source, new Piece(PieceType.EMPTY, ColorType.EMPTY));
-            board.replace(destination, sourcePiece);
-            return;
-        }
-
-        board.replace(source, destinationPiece);
+        board.replace(source, new Piece(PieceType.EMPTY, ColorType.EMPTY));
         board.replace(destination, sourcePiece);
     }
 
