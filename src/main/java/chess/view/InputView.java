@@ -16,6 +16,7 @@ public class InputView {
     private static final String COMMAND_ERROR_MESSAGE = String.format("%s 또는 %s만 입력할 수 있습니다. 다시 입력하세요.",
             GameStatus.START.value(), GameStatus.END.value());
     private static final String IS_BLANK_ERROR = "잘못된 이동 입력입니다. 다시 입력하세요.";
+    public static final String KING_DEAD_COMMAND_ERROR = "end와 status 명령어만 가능합니다. 다시 입력해 주세요.";
 
     private final Scanner scanner;
 
@@ -45,12 +46,23 @@ public class InputView {
         GameStatus status = GameStatus.findByValue(command.get(0));
         validateIsEndOrMove(status);
 
-        if (status.equals(GameStatus.END)) {
+        if (status.equals(GameStatus.END) || status.equals(GameStatus.STATUS)) {
             return new UserCommand(status);
         }
 
         validateIsNotHavePosition(command);
         return new UserCommand(status, command.get(1), command.get(2));
+    }
+
+    public UserCommand readCommandWhenKingDead() {
+        List<String> command = List.of(scanner.nextLine().split(COMMAND_SEPARATOR));
+
+        GameStatus status = GameStatus.findByValue(command.get(0));
+        if (!status.isKingDeadCommand()) {
+            throw new IllegalArgumentException(KING_DEAD_COMMAND_ERROR);
+        }
+
+        return new UserCommand(status);
     }
 
     private void validateIsEndOrMove(GameStatus status) {

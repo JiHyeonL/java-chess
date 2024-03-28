@@ -10,10 +10,7 @@ import chess.domain.score.Score;
 import chess.domain.state.Turn;
 import chess.domain.state.WhiteTurn;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class Board {
 
@@ -50,12 +47,12 @@ public class Board {
         return board.get(square);
     }
 
-    public boolean isKingAlive() {
+    public boolean isKingDead() {
         long kingCount =  board.values().stream()
                 .filter(Piece::isKing)
                 .count();
 
-        return kingCount == 2;
+        return kingCount != 2;
     }
 
     public double whiteTotalScore() {

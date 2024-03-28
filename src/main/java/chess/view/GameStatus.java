@@ -7,6 +7,7 @@ public enum GameStatus {
     START("start"),
     MOVE("move"),
     END("end"),
+    STATUS("status"),
     ;
 
     private final String value;
@@ -25,7 +26,11 @@ public enum GameStatus {
     }
 
     public boolean isGamingCommand() {
-        return this.equals(MOVE) || this.equals(END);
+        return this.equals(MOVE) || this.equals(END) || this.equals(STATUS);
+    }
+
+    public boolean isKingDeadCommand() {
+        return this.equals(END) || this.equals(STATUS);
     }
 
     public String value() {

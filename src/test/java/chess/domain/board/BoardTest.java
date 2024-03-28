@@ -144,7 +144,7 @@ public class BoardTest {
         Board board = new Board(new BoardFactory().create());
 
         // when & then
-        assertThat(board.isKingAlive()).isTrue();
+        assertThat(board.isKingDead()).isFalse();
     }
 
     @Test

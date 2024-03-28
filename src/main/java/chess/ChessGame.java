@@ -10,6 +10,8 @@ import chess.view.InputView;
 import chess.view.OutputView;
 import chess.view.UserCommand;
 
+import java.util.function.Supplier;
+
 public class ChessGame {
 
     private final InputView inputView;
@@ -46,14 +48,18 @@ public class ChessGame {
     }
 
     private boolean loopWhileEnd(Board board) {
-        UserCommand command = RetryUtil.retryUntilNoException(inputView::readMoveCommand);
+        UserCommand command = RetryUtil.retryUntilNoException(findInputViewType(board));
 
         if (isEnd(command.gameStatus())) {
             return false;
         }
-
-        movePiece(board, command);
-        outputView.writeBoard(BoardOutput.of(board));
+        if (command.gameStatus().equals(GameStatus.STATUS)) {
+            outputView.writeGameScore(board.whiteTotalScore(), board.blackTotalScore());
+        }
+        if (command.gameStatus().equals(GameStatus.MOVE)) {
+            movePiece(board, command);
+            outputView.writeBoard(BoardOutput.of(board));
+        }
 
         return true;
     }
@@ -67,5 +73,12 @@ public class ChessGame {
         Square destination = command.squareDestination();
 
         board.move(source, destination);
+    }
+
+    private Supplier<UserCommand> findInputViewType(Board board) {
+        if (board.isKingDead()) {
+            return inputView::readCommandWhenKingDead;
+        }
+        return inputView::readMoveCommand;
     }
 }
