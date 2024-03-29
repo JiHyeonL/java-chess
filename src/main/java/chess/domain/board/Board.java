@@ -11,6 +11,8 @@ import chess.domain.state.Turn;
 import chess.domain.state.WhiteTurn;
 
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.HashMap;
 
 public class Board {
 
@@ -50,21 +52,11 @@ public class Board {
     public double whiteTotalScore() {
         double totalScore = 0;
 
+        Map<Square, Piece> whitePieces = piecesByColor(Piece::isWhite);
+
         for (File file : File.sorted()) {
             int pawnCount = 0;
-            for (Rank rank : Rank.sorted()) {
-                if (!board.get(Square.of(file, rank)).isWhite()) {
-                    continue;
-                }
-                if (board.get(Square.of(file, rank)).isPawn()) {
-                    pawnCount++;
-                }
-                totalScore += board.get(Square.of(file, rank)).score();
-            }
-
-            if (pawnCount > 1) {
-                totalScore -= Score.value(PieceType.PAWN) / 2 * pawnCount;
-            }
+            totalScore = scoreByFile(whitePieces, file, pawnCount, totalScore);
         }
 
         return totalScore;
@@ -73,23 +65,33 @@ public class Board {
     public double blackTotalScore() {
         double totalScore = 0;
 
+        Map<Square, Piece> blackPieces = piecesByColor(Piece::isBlack);
+
         for (File file : File.sorted()) {
             int pawnCount = 0;
-            for (Rank rank : Rank.sorted()) {
-                if (!board.get(Square.of(file, rank)).isBlack()) {
-                    continue;
-                }
-                if (board.get(Square.of(file, rank)).isPawn()) {
-                    pawnCount++;
-                }
-                totalScore += board.get(Square.of(file, rank)).score();
-            }
-
-            if (pawnCount > 1) {
-                totalScore -= Score.value(PieceType.PAWN) / 2 * pawnCount;
-            }
+            totalScore = scoreByFile(blackPieces, file, pawnCount, totalScore);
         }
 
+        return totalScore;
+    }
+
+    private Map<Square, Piece> piecesByColor(Predicate<Piece> predicate) {
+        return board.entrySet().stream()
+                .filter(entry -> predicate.test(entry.getValue()))
+                .collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
+    }
+
+    private double scoreByFile(Map<Square, Piece> whitePieces, File file, int pawnCount, double totalScore) {
+        for (Rank rank : Rank.sorted()) {
+            if (whitePieces.get(Square.of(file, rank)).isPawn()) {
+                pawnCount++;
+            }
+            totalScore += whitePieces.get(Square.of(file, rank)).score();
+        }
+
+        if (pawnCount > 1) {
+            totalScore -= Score.value(PieceType.PAWN) / 2 * pawnCount;
+        }
         return totalScore;
     }
 }
