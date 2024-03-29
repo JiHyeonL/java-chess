@@ -7,6 +7,7 @@ import chess.domain.position.File;
 import chess.domain.position.Rank;
 import chess.domain.position.Square;
 import chess.domain.score.Score;
+import chess.domain.score.WinStatus;
 import chess.domain.state.Turn;
 import chess.domain.state.WhiteTurn;
 
@@ -52,11 +53,9 @@ public class Board {
     public double whiteTotalScore() {
         double totalScore = 0;
 
-        Map<Square, Piece> whitePieces = piecesByColor(Piece::isWhite);
-
         for (File file : File.sorted()) {
             int pawnCount = 0;
-            totalScore = scoreByFile(whitePieces, file, pawnCount, totalScore);
+            totalScore = scoreByFile(Piece::isWhite, file, pawnCount, totalScore);
         }
 
         return totalScore;
@@ -65,33 +64,39 @@ public class Board {
     public double blackTotalScore() {
         double totalScore = 0;
 
-        Map<Square, Piece> blackPieces = piecesByColor(Piece::isBlack);
-
         for (File file : File.sorted()) {
             int pawnCount = 0;
-            totalScore = scoreByFile(blackPieces, file, pawnCount, totalScore);
+            totalScore = scoreByFile(Piece::isBlack, file, pawnCount, totalScore);
         }
 
         return totalScore;
     }
 
-    private Map<Square, Piece> piecesByColor(Predicate<Piece> predicate) {
-        return board.entrySet().stream()
-                .filter(entry -> predicate.test(entry.getValue()))
-                .collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
-    }
-
-    private double scoreByFile(Map<Square, Piece> whitePieces, File file, int pawnCount, double totalScore) {
+    private double scoreByFile(Predicate<Piece> isMyColor, File file, int pawnCount, double totalScore) {
         for (Rank rank : Rank.sorted()) {
-            if (whitePieces.get(Square.of(file, rank)).isPawn()) {
+            if (!isMyColor.test(board.get(Square.of(file, rank)))) {
+                continue;
+            }
+
+            if (board.get(Square.of(file, rank)).isPawn()) {
                 pawnCount++;
             }
-            totalScore += whitePieces.get(Square.of(file, rank)).score();
+            totalScore += board.get(Square.of(file, rank)).score();
         }
 
         if (pawnCount > 1) {
             totalScore -= Score.value(PieceType.PAWN) / 2 * pawnCount;
         }
         return totalScore;
+    }
+
+    public WinStatus winningColorType() {
+        if (blackTotalScore() > whiteTotalScore()) {
+            return WinStatus.BLACK_WIN;
+        }
+        if (blackTotalScore() < whiteTotalScore()) {
+            return WinStatus.WHITE_WIN;
+        }
+        return WinStatus.DRAW;
     }
 }

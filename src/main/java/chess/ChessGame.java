@@ -48,13 +48,17 @@ public class ChessGame {
     }
 
     private boolean loopWhileEnd(Board board) {
-        UserCommand command = RetryUtil.retryUntilNoException(findInputViewType(board));
+        if (board.isKingDead()) {
+            return false;
+        }
+        UserCommand command = RetryUtil.retryUntilNoException(inputView::readMoveCommand);
 
         if (isEnd(command.gameStatus())) {
             return false;
         }
         if (command.gameStatus().equals(GameStatus.STATUS)) {
             outputView.writeGameScore(board.whiteTotalScore(), board.blackTotalScore());
+            outputView.writeWinningColor(board.winningColorType());
         }
         if (command.gameStatus().equals(GameStatus.MOVE)) {
             movePiece(board, command);
@@ -73,12 +77,5 @@ public class ChessGame {
         Square destination = command.squareDestination();
 
         board.move(source, destination);
-    }
-
-    private Supplier<UserCommand> findInputViewType(Board board) {
-        if (board.isKingDead()) {
-            return inputView::readCommandWhenKingDead;
-        }
-        return inputView::readMoveCommand;
     }
 }
