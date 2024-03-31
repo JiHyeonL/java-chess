@@ -32,7 +32,7 @@ public class BoardDaoTest {
     @Test
     public void addBoard() {
         final Board chessboard = new Board(new BoardFactory().create());
-        boardDao.addChessBoard(0, chessboard);
+        boardDao.addBoard(chessboard);
     }
 
     @Test
@@ -59,7 +59,7 @@ public class BoardDaoTest {
         final ColorType colorType = ColorType.BLACK;
 
         // when
-        boardDao.updateSquarePiece(file, rank, pieceType, colorType);
+        boardDao.updateSquareInfo(file, rank, pieceType, colorType);
 
         // then
         assertThat(boardDao.findPieceBySquare(file, rank))
@@ -81,7 +81,7 @@ public class BoardDaoTest {
         addBoard();
 
         // when
-        Map<Square, Piece> actual = boardDao.getAllPiecesInfo();
+        Map<Square, Piece> actual = boardDao.selectTotalBoard();
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(new BoardFactory().create());

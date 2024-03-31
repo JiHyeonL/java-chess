@@ -3,7 +3,6 @@ package chess;
 import chess.domain.board.Board;
 import chess.domain.board.BoardFactory;
 import chess.domain.dao.BoardDao;
-import chess.domain.piece.Piece;
 import chess.view.BoardOutput;
 import chess.domain.position.Square;
 import chess.util.RetryUtil;
@@ -11,8 +10,6 @@ import chess.view.GameStatus;
 import chess.view.InputView;
 import chess.view.OutputView;
 import chess.view.UserCommand;
-
-import java.util.Map;
 
 public class ChessGame {
 
@@ -45,11 +42,11 @@ public class ChessGame {
 
     private Board makeBoard() {
         if (boardDao.existBoard()) {
-            return new Board(boardDao.getAllPiecesInfo());
+            return new Board(boardDao.selectTotalBoard());
         }
 
         Board board = new Board(new BoardFactory().create());
-        boardDao.addChessBoard(board);
+        boardDao.addBoard(board);
 
         return board;
     }

@@ -32,16 +32,16 @@ public class BoardDao {
         }
     }
 
-    public void addChessBoard(Board board) {
+    public void addBoard(Board board) {
         for (File file : File.sorted()) {
             for (Rank rank : Rank.sorted()) {
                 Piece piece = board.findPieceBySquare(Square.of(file, rank));
-                addBySquare(file, rank, piece);
+                addSquareInfo(file, rank, piece);
             }
         }
     }
 
-    private void addBySquare(File file, Rank rank, Piece piece) {
+    private void addSquareInfo(File file, Rank rank, Piece piece) {
         final var query = "INSERT INTO chessboard VALUES(?, ?, ?, ?, ?)";
 
         try (final var connection = getConnection();
@@ -79,23 +79,6 @@ public class BoardDao {
         return null;
     }
 
-    public void updateSquarePiece(File file, Rank rank, PieceType newPieceType, ColorType newColorType) {
-        final var query = "UPDATE chessboard SET piece_type = ?, piece_color = ? " +
-                "WHERE file_value = ? AND rank_value = ?";
-
-        try (final var connection = getConnection();
-             final var preparedStatement = connection.prepareStatement(query)) {
-             preparedStatement.setString(1, newPieceType.name());
-             preparedStatement.setString(2, newColorType.name());
-             preparedStatement.setString(3, file.symbol());
-             preparedStatement.setInt(4, rank.value());
-
-             preparedStatement.executeUpdate();
-        } catch (final SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public boolean existBoard() {
         final var query = "SELECT COUNT(*) FROM chessboard";
 
@@ -114,7 +97,7 @@ public class BoardDao {
         return false;
     }
 
-    public Map<Square, Piece> getAllPiecesInfo() {
+    public Map<Square, Piece> selectTotalBoard() {
         final var query = "SELECT * FROM chessboard";
         final Map<Square, Piece> board = new HashMap<>();
 
@@ -141,8 +124,25 @@ public class BoardDao {
         for (File file : File.sorted()) {
             for (Rank rank : Rank.sorted()) {
                 Piece piece = board.findPieceBySquare(Square.of(file, rank));
-                updateSquarePiece(file, rank, piece.pieceType(), piece.colorType());
+                updateSquareInfo(file, rank, piece.pieceType(), piece.colorType());
             }
+        }
+    }
+
+    public void updateSquareInfo(File file, Rank rank, PieceType newPieceType, ColorType newColorType) {
+        final var query = "UPDATE chessboard SET piece_type = ?, piece_color = ? " +
+                "WHERE file_value = ? AND rank_value = ?";
+
+        try (final var connection = getConnection();
+             final var preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, newPieceType.name());
+            preparedStatement.setString(2, newColorType.name());
+            preparedStatement.setString(3, file.symbol());
+            preparedStatement.setInt(4, rank.value());
+
+            preparedStatement.executeUpdate();
+        } catch (final SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
