@@ -11,7 +11,7 @@ public enum PieceType {
     BISHOP(new BishopMoveStrategy()),
     KNIGHT(new KnightMoveStrategy()),
     PAWN(new PawnMoveStrategy()),
-    EMPTY(new PawnMoveStrategy()),
+    EMPTY(new EmptyMoveStrategy()),
     ;
 
     private final MoveStrategy moveStrategy;
