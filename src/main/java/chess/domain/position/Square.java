@@ -65,4 +65,12 @@ public class Square {
     public boolean matchesFile(Square square) {
         return file.symbol().equals(square.file.symbol());
     }
+
+    public File file() {
+        return file;
+    }
+
+    public Rank rank() {
+        return rank;
+    }
 }
