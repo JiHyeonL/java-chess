@@ -2,6 +2,8 @@ package chess;
 
 import chess.domain.board.Board;
 import chess.domain.board.BoardFactory;
+import chess.domain.dao.BoardDao;
+import chess.domain.piece.Piece;
 import chess.view.BoardOutput;
 import chess.domain.position.Square;
 import chess.util.RetryUtil;
@@ -10,33 +12,38 @@ import chess.view.InputView;
 import chess.view.OutputView;
 import chess.view.UserCommand;
 
-import java.util.function.Supplier;
+import java.util.Map;
 
 public class ChessGame {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private final BoardDao boardDao;
 
     public ChessGame() {
         this.inputView = new InputView();
         this.outputView = new OutputView();
+        this.boardDao = new BoardDao();
     }
 
     public void play() {
-        UserCommand command = RetryUtil.retryUntilNoException(inputView::readStartCommand);
+        UserCommand command = RetryUtil.retryUntilNoException(inputView::readFirstCommand);
 
-        if (!isStart(command)) {
+        if (isEnd(command)) {
             return;
         }
 
-        Board board = new Board(new BoardFactory().create());
+        Board board = makeBoard();
         outputView.writeBoard(BoardOutput.of(board));
 
         playUntilEnd(board);
     }
 
-    private boolean isStart(UserCommand command) {
-        return command.gameStatus().equals(GameStatus.START);
+    private Board makeBoard() {
+        if (boardDao.existBoard()) {
+            return new Board(boardDao.getAllPiecesInfo());
+        }
+        return new Board(new BoardFactory().create());
     }
 
     private void playUntilEnd(Board board) {
@@ -53,7 +60,7 @@ public class ChessGame {
         }
         UserCommand command = RetryUtil.retryUntilNoException(inputView::readMoveCommand);
 
-        if (isEnd(command.gameStatus())) {
+        if (isEnd(command)) {
             return false;
         }
         if (command.gameStatus().equals(GameStatus.STATUS)) {
@@ -68,8 +75,8 @@ public class ChessGame {
         return true;
     }
 
-    private boolean isEnd(GameStatus gameStatus) {
-        return gameStatus.equals(GameStatus.END);
+    private boolean isEnd(UserCommand command) {
+        return command.gameStatus().equals(GameStatus.END);
     }
 
     private void movePiece(Board board, UserCommand command) {
