@@ -56,6 +56,7 @@ public class ChessGame {
 
     private boolean loopWhileEnd(Board board) {
         if (board.isKingDead()) {
+            boardDao.deleteBoard();
             return false;
         }
         UserCommand command = RetryUtil.retryUntilNoException(inputView::readMoveCommand);
