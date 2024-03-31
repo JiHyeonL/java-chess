@@ -39,11 +39,19 @@ public class ChessGame {
         playUntilEnd(board);
     }
 
+    private boolean isEnd(UserCommand command) {
+        return command.gameStatus().equals(GameStatus.END);
+    }
+
     private Board makeBoard() {
         if (boardDao.existBoard()) {
             return new Board(boardDao.getAllPiecesInfo());
         }
-        return new Board(new BoardFactory().create());
+
+        Board board = new Board(new BoardFactory().create());
+        boardDao.addChessBoard(board);
+
+        return board;
     }
 
     private void playUntilEnd(Board board) {
@@ -59,16 +67,20 @@ public class ChessGame {
             boardDao.deleteBoard();
             return false;
         }
+
         UserCommand command = RetryUtil.retryUntilNoException(inputView::readMoveCommand);
 
         if (isEnd(command)) {
+            boardDao.updateBoard(board);
             return false;
         }
-        if (command.gameStatus().equals(GameStatus.STATUS)) {
+
+        if (isStatus(command)) {
             outputView.writeGameScore(board.whiteTotalScore(), board.blackTotalScore());
             outputView.writeWinningColor(board.winningColorType());
         }
-        if (command.gameStatus().equals(GameStatus.MOVE)) {
+
+        if (isMove(command)) {
             movePiece(board, command);
             outputView.writeBoard(BoardOutput.of(board));
         }
@@ -76,8 +88,12 @@ public class ChessGame {
         return true;
     }
 
-    private boolean isEnd(UserCommand command) {
-        return command.gameStatus().equals(GameStatus.END);
+    private boolean isStatus(UserCommand command) {
+        return command.gameStatus().equals(GameStatus.STATUS);
+    }
+
+    private boolean isMove(UserCommand command) {
+        return command.gameStatus().equals(GameStatus.MOVE);
     }
 
     private void movePiece(Board board, UserCommand command) {

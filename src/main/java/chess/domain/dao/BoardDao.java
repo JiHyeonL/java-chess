@@ -32,21 +32,21 @@ public class BoardDao {
         }
     }
 
-    public void addChessBoard(int boardId, Board board) {
+    public void addChessBoard(Board board) {
         for (File file : File.sorted()) {
             for (Rank rank : Rank.sorted()) {
                 Piece piece = board.findPieceBySquare(Square.of(file, rank));
-                addBySquare(boardId, file, rank, piece);
+                addBySquare(file, rank, piece);
             }
         }
     }
 
-    private void addBySquare(int boardId, File file, Rank rank, Piece piece) {
+    private void addBySquare(File file, Rank rank, Piece piece) {
         final var query = "INSERT INTO chessboard VALUES(?, ?, ?, ?, ?)";
 
         try (final var connection = getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, boardId);
+            preparedStatement.setInt(1, 1);
             preparedStatement.setString(2, file.symbol());
             preparedStatement.setInt(3, rank.value());
             preparedStatement.setString(4, piece.pieceType().name());
