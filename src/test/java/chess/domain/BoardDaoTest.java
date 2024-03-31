@@ -2,16 +2,18 @@ package chess.domain;
 
 import chess.domain.board.Board;
 import chess.domain.board.BoardFactory;
-import chess.domain.database.BoardDao;
+import chess.domain.dao.BoardDao;
 import chess.domain.piece.ColorType;
 import chess.domain.piece.Piece;
 import chess.domain.piece.PieceType;
 import chess.domain.position.File;
 import chess.domain.position.Rank;
+import chess.domain.position.Square;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,10 +59,41 @@ public class BoardDaoTest {
         final ColorType colorType = ColorType.BLACK;
 
         // when
-        boardDao.updateBoard(file, rank, pieceType, colorType);
+        boardDao.updateSquarePiece(file, rank, pieceType, colorType);
 
         // then
         assertThat(boardDao.findPieceBySquare(file, rank))
                 .isEqualTo(Piece.of(pieceType, colorType));
+    }
+
+    @Test
+    @DisplayName("보드에 데이터가 있으면 true를 반환한다")
+    void existBoard() {
+        // given & when & then
+        assertThat(boardDao.existBoard()).isTrue();
+    }
+
+    @Test
+    @DisplayName("보드의 위치별 체스말을 전부 가져온다.")
+    void allBoard() {
+        // given
+        deleteBoardInfo();
+        addBoard();
+
+        // when
+        Map<Square, Piece> actual = boardDao.getAllPiecesInfo();
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(new BoardFactory().create());
+    }
+
+    @Test
+    @DisplayName("보드의 모든 데이터를 삭제한다.")
+    void deleteBoardInfo() {
+        // given & when
+        boardDao.deleteBoard();
+
+        // then
+        assertThat(boardDao.existBoard()).isFalse();
     }
 }
