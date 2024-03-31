@@ -29,7 +29,7 @@ public enum GameStatus {
         return this.equals(MOVE) || this.equals(END) || this.equals(STATUS);
     }
 
-    public boolean isKingDeadCommand() {
+    public boolean isStartOrEnd() {
         return this.equals(END) || this.equals(STATUS);
     }
 

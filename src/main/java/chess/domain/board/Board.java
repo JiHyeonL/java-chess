@@ -1,6 +1,6 @@
 package chess.domain.board;
 
-import chess.domain.database.BoardDao;
+import chess.domain.dao.BoardDao;
 import chess.domain.piece.ColorType;
 import chess.domain.piece.Piece;
 import chess.domain.piece.PieceType;
@@ -14,7 +14,6 @@ import chess.domain.state.WhiteTurn;
 
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.HashMap;
 
 public class Board {
 
@@ -26,20 +25,17 @@ public class Board {
         this.turn = new WhiteTurn();
     }
 
-    public void move(Square source, Square destination, BoardDao boardDao) {
+    public void move(Square source, Square destination) {
         turn = turn.checkMovable(board, source, destination);
 
-        moveOrCatch(source, destination, boardDao);
+        moveOrCatch(source, destination);
     }
 
-    private void moveOrCatch(Square source, Square destination, BoardDao boardDao) {
+    private void moveOrCatch(Square source, Square destination) {
         Piece sourcePiece = board.get(source);
 
         board.replace(source, new Piece(PieceType.EMPTY, ColorType.EMPTY));
         board.replace(destination, sourcePiece);
-
-        boardDao.updateBoard(source.file(), source.rank(), PieceType.EMPTY, ColorType.EMPTY);
-        boardDao.updateBoard(destination.file(), destination.rank(), sourcePiece.pieceType(), sourcePiece.colorType());
     }
 
     public Piece findPieceBySquare(Square square) {

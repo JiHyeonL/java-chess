@@ -13,7 +13,7 @@ public class InputView {
             "> 게임 종료 : %s\n" +
             "> 게임 이동 : %s source위치 target위치 - 예. %s b2 b3",
             GameStatus.START.value(), GameStatus.END.value(), GameStatus.MOVE.value(), GameStatus.MOVE.value());
-    private static final String COMMAND_ERROR_MESSAGE = String.format("%s 또는 %s만 입력할 수 있습니다. 다시 입력하세요.",
+    private static final String FIRST_COMMAND_ERROR_MESSAGE = String.format("%s 또는 %s만 입력할 수 있습니다. 다시 입력하세요.",
             GameStatus.START.value(), GameStatus.END.value());
     private static final String IS_BLANK_ERROR = "잘못된 이동 입력입니다. 다시 입력하세요.";
 
@@ -23,19 +23,18 @@ public class InputView {
         this.scanner = new Scanner(System.in);
     }
 
-    public UserCommand readStartCommand() {
+    public UserCommand readFirstCommand() {
         System.out.println(CHESS_GAME_TITLE);
 
         GameStatus status = GameStatus.findByValue(scanner.nextLine());
-
-        validateIsStartCommand(status);
+        validateIsStart(status);
 
         return new UserCommand(status);
     }
 
-    private void validateIsStartCommand(GameStatus status) {
-        if (!status.equals(GameStatus.START)) {
-            throw new IllegalArgumentException(COMMAND_ERROR_MESSAGE);
+    public void validateIsStart(GameStatus status) {
+        if (!status.isStartOrEnd()) {
+            throw new IllegalArgumentException(FIRST_COMMAND_ERROR_MESSAGE);
         }
     }
 

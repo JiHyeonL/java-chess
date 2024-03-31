@@ -31,7 +31,7 @@ public class Square {
         return POOL.get(toKey(file, rank));
     }
 
-    public static Square findByName(String name) {
+    public static Square from(String name) {
         validateInPool(name);
         return POOL.get(name);
     }

@@ -1,6 +1,5 @@
 package chess.view;
 
-import chess.domain.position.Direction;
 import chess.domain.position.Square;
 
 public record UserCommand(GameStatus gameStatus, String source, String destination) {
@@ -10,10 +9,10 @@ public record UserCommand(GameStatus gameStatus, String source, String destinati
     }
 
     public Square squareSource() {
-        return Square.findByName(source);
+        return Square.from(source);
     }
 
     public Square squareDestination() {
-        return Square.findByName(destination);
+        return Square.from(destination);
     }
 }
