@@ -15,6 +15,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 public class BoardDao {
     private static final String SERVER = "localhost:13306"; // MySQL 서버 주소
@@ -99,7 +100,7 @@ public class BoardDao {
         return false;
     }
 
-    public Map<Square, Piece> selectTotalBoard() {
+    public Board selectTotalBoard() {
         final var query = "SELECT * FROM chessboard";
         final Map<Square, Piece> board = new HashMap<>();
 
@@ -114,7 +115,7 @@ public class BoardDao {
                 board.put(square, piece);
             }
 
-            return board;
+            return new Board(board, selectTurn().decideTurn());
         } catch (final SQLException e) {
             throw new RuntimeException(e);
         }

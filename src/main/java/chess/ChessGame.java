@@ -43,7 +43,7 @@ public class ChessGame {
 
     private Board makeBoard() {
         if (boardDao.existBoard()) {
-            return new Board(boardDao.selectTotalBoard(), boardDao.selectTurn().decideTurn());
+            return boardDao.selectTotalBoard();
         }
 
         Board board = new BoardFactory().create();
