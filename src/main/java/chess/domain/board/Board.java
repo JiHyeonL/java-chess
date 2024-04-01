@@ -1,6 +1,5 @@
 package chess.domain.board;
 
-import chess.domain.dao.BoardDao;
 import chess.domain.piece.ColorType;
 import chess.domain.piece.Piece;
 import chess.domain.piece.PieceType;

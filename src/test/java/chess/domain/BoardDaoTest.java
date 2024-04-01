@@ -32,7 +32,7 @@ public class BoardDaoTest {
     @DisplayName("보드의 첫 결과를 저장한다.")
     @Test
     public void addBoard() {
-        final Board chessboard = new Board(new BoardFactory().create());
+        final Board chessboard = new BoardFactory().create();
         boardDao.addBoard(chessboard);
     }
 
@@ -54,6 +54,7 @@ public class BoardDaoTest {
     @DisplayName("보드의 특정 위치에 있는 말을 바꾼다.")
     void changePiece() {
         // given
+        addBoard();
         final File file = File.A;
         final Rank rank = Rank.TWO;
         final PieceType pieceType = PieceType.KING;
@@ -71,7 +72,10 @@ public class BoardDaoTest {
     @Test
     @DisplayName("보드에 데이터가 있으면 true를 반환한다")
     void existBoard() {
-        // given & when & then
+        // given
+        addBoard();
+
+        // when & then
         assertThat(boardDao.existBoard()).isTrue();
     }
 

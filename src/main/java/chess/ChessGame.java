@@ -3,7 +3,6 @@ package chess;
 import chess.domain.board.Board;
 import chess.domain.board.BoardFactory;
 import chess.domain.dao.BoardDao;
-import chess.domain.state.TurnState;
 import chess.view.BoardOutput;
 import chess.domain.position.Square;
 import chess.util.RetryUtil;
@@ -46,7 +45,7 @@ public class ChessGame {
             return new Board(boardDao.selectTotalBoard(), boardDao.selectTurn().decideTurn());
         }
 
-        Board board = new Board(new BoardFactory().create());
+        Board board = new BoardFactory().create();
         boardDao.addBoard(board);
 
         return board;
@@ -68,6 +67,10 @@ public class ChessGame {
 
         UserCommand command = RetryUtil.retryUntilNoException(inputView::readMoveCommand);
 
+        return commandProcess(board, command);
+    }
+
+    private boolean commandProcess(Board board, UserCommand command) {
         if (isEnd(command)) {
             boardDao.updateBoard(board);
             return false;

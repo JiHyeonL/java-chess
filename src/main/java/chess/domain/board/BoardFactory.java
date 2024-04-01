@@ -12,14 +12,14 @@ import java.util.Map;
 
 public class BoardFactory {
 
-    public Map<Square, Piece> create() {
-        Map<Square, Piece> board = new HashMap<>();
+    public Board create() {
+        Map<Square, Piece> pieces = new HashMap<>();
 
         for (Rank rank : Rank.sorted()) {
-            createByRank(rank, board);
+            createByRank(rank, pieces);
         }
 
-        return board;
+        return new Board(pieces);
     }
 
     private void createByRank(Rank rank, Map<Square, Piece> board) {
