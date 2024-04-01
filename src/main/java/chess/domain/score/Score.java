@@ -3,6 +3,9 @@ package chess.domain.score;
 import chess.domain.piece.PieceType;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public enum Score {
     QUEEN(PieceType.QUEEN, 9),
@@ -23,9 +26,14 @@ public enum Score {
     }
 
     public static double value(PieceType pieceType) {
-        return Arrays.stream(Score.values())
+        Optional<Score> values =  Arrays.stream(Score.values())
                 .filter(score -> score.pieceType.equals(pieceType))
-                .findFirst()
-                .get().score;
+                .findFirst();
+
+        if (values.isPresent()) {
+            return values.get().score;
+        }
+
+        throw new NullPointerException("pieceType에 맞는 score가 없습니다.");
     }
 }
