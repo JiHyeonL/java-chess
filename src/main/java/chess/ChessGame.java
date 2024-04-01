@@ -3,6 +3,7 @@ package chess;
 import chess.domain.board.Board;
 import chess.domain.board.BoardFactory;
 import chess.domain.dao.BoardDao;
+import chess.domain.piece.Piece;
 import chess.view.BoardOutput;
 import chess.domain.position.Square;
 import chess.util.RetryUtil;
@@ -77,7 +78,7 @@ public class ChessGame {
         }
 
         if (isStatus(command)) {
-            outputView.writeGameScore(board.whiteTotalScore(), board.blackTotalScore());
+            outputView.writeGameScore(board.calculateScore(Piece::isWhite), board.calculateScore(Piece::isBlack));
             outputView.writeWinningColor(board.winningColorType());
         }
 

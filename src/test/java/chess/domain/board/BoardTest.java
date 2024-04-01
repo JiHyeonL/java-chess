@@ -154,8 +154,8 @@ public class BoardTest {
         Board board = new BoardFactory().create();
 
         // when
-        double blackScore = board.blackTotalScore();
-        double whiteScore = board.whiteTotalScore();
+        double blackScore = board.calculateScore(Piece::isBlack);
+        double whiteScore = board.calculateScore(Piece::isWhite);
 
         // then
         assertThat(blackScore).isEqualTo(38);
@@ -174,7 +174,7 @@ public class BoardTest {
         board.move(Square.of(File.H, Rank.EIGHT), Square.of(File.H, Rank.FIVE));
 
         // when
-        double score = board.blackTotalScore();
+        double score = board.calculateScore(Piece::isBlack);
 
         // then
         assertThat(score).isEqualTo(37);
@@ -191,8 +191,8 @@ public class BoardTest {
         board.move(Square.of(File.G, Rank.FOUR), Square.of(File.H, Rank.FIVE));
 
         // when
-        double whiteScore = board.whiteTotalScore();
-        double blackScore = board.blackTotalScore();
+        double blackScore = board.calculateScore(Piece::isBlack);
+        double whiteScore = board.calculateScore(Piece::isWhite);
 
         // then
         assertThat(whiteScore).isEqualTo(37);

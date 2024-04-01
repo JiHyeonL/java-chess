@@ -33,10 +33,10 @@ public class Board {
     public void move(Square source, Square destination) {
         turn = turn.checkMovable(board, source, destination);
 
-        moveOrCatch(source, destination);
+        changePosition(source, destination);
     }
 
-    private void moveOrCatch(Square source, Square destination) {
+    private void changePosition(Square source, Square destination) {
         Piece sourcePiece = board.get(source);
 
         board.replace(source, new Piece(PieceType.EMPTY, ColorType.EMPTY));
@@ -55,29 +55,19 @@ public class Board {
         return kingCount != 2;
     }
 
-    public double whiteTotalScore() {
+    public double calculateScore(Predicate<Piece> myColor) {
         double totalScore = 0;
 
         for (File file : File.sorted()) {
-            int pawnCount = 0;
-            totalScore = scoreByFile(Piece::isWhite, file, pawnCount, totalScore);
+            totalScore = scoreByFile(myColor, file, totalScore);
         }
 
         return totalScore;
     }
 
-    public double blackTotalScore() {
-        double totalScore = 0;
+    private double scoreByFile(Predicate<Piece> isMyColor, File file, double totalScore) {
+        int pawnCount = 0;
 
-        for (File file : File.sorted()) {
-            int pawnCount = 0;
-            totalScore = scoreByFile(Piece::isBlack, file, pawnCount, totalScore);
-        }
-
-        return totalScore;
-    }
-
-    private double scoreByFile(Predicate<Piece> isMyColor, File file, int pawnCount, double totalScore) {
         for (Rank rank : Rank.sorted()) {
             if (!isMyColor.test(board.get(Square.of(file, rank)))) {
                 continue;
@@ -92,16 +82,21 @@ public class Board {
         if (pawnCount > 1) {
             totalScore -= Score.value(PieceType.PAWN) / 2 * pawnCount;
         }
+
         return totalScore;
     }
 
     public WinStatus winningColorType() {
-        if (blackTotalScore() > whiteTotalScore()) {
+        double scoreDiff = calculateScore(Piece::isBlack) - calculateScore(Piece::isWhite);
+
+        if (scoreDiff > 0) {
             return WinStatus.BLACK_WIN;
         }
-        if (blackTotalScore() < whiteTotalScore()) {
+
+        if (scoreDiff < 0) {
             return WinStatus.WHITE_WIN;
         }
+
         return WinStatus.DRAW;
     }
 
