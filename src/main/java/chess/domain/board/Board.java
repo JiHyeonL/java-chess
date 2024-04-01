@@ -10,6 +10,7 @@ import chess.domain.position.Square;
 import chess.domain.score.Score;
 import chess.domain.score.WinStatus;
 import chess.domain.state.Turn;
+import chess.domain.state.TurnState;
 import chess.domain.state.WhiteTurn;
 
 import java.util.Map;
@@ -23,6 +24,11 @@ public class Board {
     public Board(Map<Square, Piece> board) {
         this.board = board;
         this.turn = new WhiteTurn();
+    }
+
+    public Board(Map<Square, Piece> board, Turn turn) {
+        this.board = board;
+        this.turn = turn;
     }
 
     public void move(Square source, Square destination) {
@@ -98,5 +104,9 @@ public class Board {
             return WinStatus.WHITE_WIN;
         }
         return WinStatus.DRAW;
+    }
+
+    public TurnState turnState() {
+        return turn.turnState();
     }
 }

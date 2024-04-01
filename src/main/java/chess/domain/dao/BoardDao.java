@@ -7,6 +7,8 @@ import chess.domain.piece.PieceType;
 import chess.domain.position.File;
 import chess.domain.position.Rank;
 import chess.domain.position.Square;
+import chess.domain.state.Turn;
+import chess.domain.state.TurnState;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -36,13 +38,13 @@ public class BoardDao {
         for (File file : File.sorted()) {
             for (Rank rank : Rank.sorted()) {
                 Piece piece = board.findPieceBySquare(Square.of(file, rank));
-                addSquareInfo(file, rank, piece);
+                addSquareInfo(file, rank, piece, board.turnState());
             }
         }
     }
 
-    private void addSquareInfo(File file, Rank rank, Piece piece) {
-        final var query = "INSERT INTO chessboard (file_value, rank_value, piece_type, piece_color) VALUES(?, ?, ?, ?)";
+    private void addSquareInfo(File file, Rank rank, Piece piece, TurnState turn) {
+        final var query = "INSERT INTO chessboard (file_value, rank_value, piece_type, piece_color, turn) VALUES(?, ?, ?, ?, ?)";
 
         try (final var connection = getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
@@ -50,6 +52,7 @@ public class BoardDao {
             preparedStatement.setInt(2, rank.value());
             preparedStatement.setString(3, piece.pieceType().name());
             preparedStatement.setString(4, piece.colorType().name());
+            preparedStatement.setString(5, turn.name());
 
             preparedStatement.executeUpdate();
         } catch (final SQLException e) {
@@ -102,42 +105,59 @@ public class BoardDao {
 
         try (final var connection = getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
+
             final var resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 Square square = Square.from(resultSet.getString("file_value") + resultSet.getString("rank_value"));
                 Piece piece = Piece.from(resultSet.getString("piece_color") + resultSet.getString("piece_type"));
-
                 board.put(square, piece);
             }
 
-            preparedStatement.executeQuery();
+            return board;
+        } catch (final SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public TurnState selectTurn() {
+        final var query = "SELECT turn FROM chessboard";
+        try (final var connection = getConnection();
+             final var preparedStatement = connection.prepareStatement(query)) {
+
+            final var resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return TurnState.findByName(
+                        resultSet.getString("turn")
+                );
+            }
         } catch (final SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return board;
+        return null;
     }
 
     public void updateBoard(Board board) {
         for (File file : File.sorted()) {
             for (Rank rank : Rank.sorted()) {
                 Piece piece = board.findPieceBySquare(Square.of(file, rank));
-                updateSquareInfo(file, rank, piece.pieceType(), piece.colorType());
+                updateSquareInfo(file, rank, piece.pieceType(), piece.colorType(), board.turnState());
             }
         }
     }
 
-    public void updateSquareInfo(File file, Rank rank, PieceType newPieceType, ColorType newColorType) {
-        final var query = "UPDATE chessboard SET piece_type = ?, piece_color = ? " +
+    public void updateSquareInfo(File file, Rank rank, PieceType newPieceType, ColorType newColorType, TurnState turn) {
+        final var query = "UPDATE chessboard SET piece_type = ?, piece_color = ? , turn = ?" +
                 "WHERE file_value = ? AND rank_value = ?";
 
         try (final var connection = getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, newPieceType.name());
             preparedStatement.setString(2, newColorType.name());
-            preparedStatement.setString(3, file.symbol());
-            preparedStatement.setInt(4, rank.value());
+            preparedStatement.setString(3, turn.name());
+            preparedStatement.setString(4, file.symbol());
+            preparedStatement.setInt(5, rank.value());
 
             preparedStatement.executeUpdate();
         } catch (final SQLException e) {

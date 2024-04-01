@@ -10,6 +10,10 @@ import java.util.Map;
 
 public class BlackTurn implements Turn {
 
+    public TurnState turnState() {
+        return TurnState.BLACK;
+    }
+
     public Turn checkMovable(Map<Square, Piece> board, Square source, Square destination) {
         Piece sourcePiece = board.get(source);
         Piece destinationPiece = board.get(destination);

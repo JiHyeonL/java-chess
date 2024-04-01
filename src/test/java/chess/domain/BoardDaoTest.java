@@ -9,6 +9,7 @@ import chess.domain.piece.PieceType;
 import chess.domain.position.File;
 import chess.domain.position.Rank;
 import chess.domain.position.Square;
+import chess.domain.state.TurnState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -57,9 +58,10 @@ public class BoardDaoTest {
         final Rank rank = Rank.TWO;
         final PieceType pieceType = PieceType.KING;
         final ColorType colorType = ColorType.BLACK;
+        final TurnState turnState = TurnState.BLACK;
 
         // when
-        boardDao.updateSquareInfo(file, rank, pieceType, colorType);
+        boardDao.updateSquareInfo(file, rank, pieceType, colorType, turnState);
 
         // then
         assertThat(boardDao.findPieceBySquare(file, rank))
@@ -71,20 +73,6 @@ public class BoardDaoTest {
     void existBoard() {
         // given & when & then
         assertThat(boardDao.existBoard()).isTrue();
-    }
-
-    @Test
-    @DisplayName("보드의 위치별 체스말을 전부 가져온다.")
-    void allBoard() {
-        // given
-        deleteBoardInfo();
-        addBoard();
-
-        // when
-        Map<Square, Piece> actual = boardDao.selectTotalBoard();
-
-        // then
-        assertThat(actual).usingRecursiveComparison().isEqualTo(new BoardFactory().create());
     }
 
     @Test

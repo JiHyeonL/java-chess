@@ -9,12 +9,15 @@ import chess.domain.position.SquareDifferent;
 import java.util.Map;
 
 public class WhiteTurn implements Turn {
-
     protected static final String NOT_YOUR_TURN_ERROR = "움직이려고 하는 말이 본인 진영의 말이 아닙니다.";
     protected static final String CANNOT_MOVE_ERROR = "해당 말의 규칙으로는 도착지로 갈 수 없습니다.";
     protected static final String SAME_COLOR_ERROR = "목적지에 같은 편 말이 있어 이동할 수 없습니다.";
     protected static final String PAWN_CANNOT_CATCH_STRAIGHT_ERROR = "폰은 직선 경로로 상대 말을 잡을 수 없습니다.";
     protected static final String PATH_BLOCKED_ERROR = "막힌 경로입니다.";
+
+    public TurnState turnState() {
+        return TurnState.WHITE;
+    }
 
     @Override
     public Turn checkMovable(Map<Square, Piece> board, Square source, Square destination) {

@@ -7,8 +7,7 @@ CREATE TABLE chessboard (
     rank_value VARCHAR(10) NOT NULL,
     piece_type VARCHAR(10) NOT NULL,
     piece_color VARCHAR(10) NOT NULL,
+    turn VARCHAR(10) NOT NULL,
 
     PRIMARY KEY (board_id)
 );
-
-DROP TABLE IF EXISTS chessboard;

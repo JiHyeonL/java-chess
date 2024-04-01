@@ -3,6 +3,7 @@ package chess;
 import chess.domain.board.Board;
 import chess.domain.board.BoardFactory;
 import chess.domain.dao.BoardDao;
+import chess.domain.state.TurnState;
 import chess.view.BoardOutput;
 import chess.domain.position.Square;
 import chess.util.RetryUtil;
@@ -42,7 +43,7 @@ public class ChessGame {
 
     private Board makeBoard() {
         if (boardDao.existBoard()) {
-            return new Board(boardDao.selectTotalBoard());
+            return new Board(boardDao.selectTotalBoard(), boardDao.selectTurn().decideTurn());
         }
 
         Board board = new Board(new BoardFactory().create());
