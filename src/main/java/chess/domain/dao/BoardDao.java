@@ -42,15 +42,14 @@ public class BoardDao {
     }
 
     private void addSquareInfo(File file, Rank rank, Piece piece) {
-        final var query = "INSERT INTO chessboard VALUES(?, ?, ?, ?, ?)";
+        final var query = "INSERT INTO chessboard (file_value, rank_value, piece_type, piece_color) VALUES(?, ?, ?, ?)";
 
         try (final var connection = getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setInt(1, 1);
-            preparedStatement.setString(2, file.symbol());
-            preparedStatement.setInt(3, rank.value());
-            preparedStatement.setString(4, piece.pieceType().name());
-            preparedStatement.setString(5, piece.colorType().name());
+            preparedStatement.setString(1, file.symbol());
+            preparedStatement.setInt(2, rank.value());
+            preparedStatement.setString(3, piece.pieceType().name());
+            preparedStatement.setString(4, piece.colorType().name());
 
             preparedStatement.executeUpdate();
         } catch (final SQLException e) {
