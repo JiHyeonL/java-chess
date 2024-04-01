@@ -30,7 +30,7 @@ public enum GameStatus {
     }
 
     public boolean isStartOrEnd() {
-        return this.equals(END) || this.equals(STATUS);
+        return this.equals(END) || this.equals(START);
     }
 
     public String value() {
