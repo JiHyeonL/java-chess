@@ -27,7 +27,7 @@ public class ChessGame {
     public void play() {
         UserCommand command = RetryUtil.retryUntilNoException(inputView::readFirstCommand);
 
-        if (isEnd(command)) {
+        if (GameStatus.isEnd(command)) {
             return;
         }
 
@@ -35,10 +35,6 @@ public class ChessGame {
         outputView.writeBoard(BoardOutput.of(board));
 
         playUntilEnd(board);
-    }
-
-    private boolean isEnd(UserCommand command) {
-        return command.gameStatus().equals(GameStatus.END);
     }
 
     private Board makeBoard() {
@@ -72,17 +68,17 @@ public class ChessGame {
     }
 
     private boolean commandProcess(Board board, UserCommand command) {
-        if (isEnd(command)) {
+        if (GameStatus.isEnd(command)) {
             boardDao.updateBoard(board);
             return false;
         }
 
-        if (isStatus(command)) {
+        if (GameStatus.isStatus(command)) {
             outputView.writeGameScore(board.calculateScore(Piece::isWhite), board.calculateScore(Piece::isBlack));
             outputView.writeWinningColor(board.winningColorType());
         }
 
-        if (isMove(command)) {
+        if (GameStatus.isMove(command)) {
             movePiece(board, command);
             outputView.writeBoard(BoardOutput.of(board));
         }
@@ -90,13 +86,6 @@ public class ChessGame {
         return true;
     }
 
-    private boolean isStatus(UserCommand command) {
-        return command.gameStatus().equals(GameStatus.STATUS);
-    }
-
-    private boolean isMove(UserCommand command) {
-        return command.gameStatus().equals(GameStatus.MOVE);
-    }
 
     private void movePiece(Board board, UserCommand command) {
         Square source = command.squareSource();

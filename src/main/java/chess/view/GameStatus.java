@@ -33,6 +33,18 @@ public enum GameStatus {
         return this.equals(END) || this.equals(START);
     }
 
+    public static boolean isEnd(UserCommand command) {
+        return command.gameStatus().equals(GameStatus.END);
+    }
+
+    public static boolean isStatus(UserCommand command) {
+        return command.gameStatus().equals(GameStatus.STATUS);
+    }
+
+    public static boolean isMove(UserCommand command) {
+        return command.gameStatus().equals(GameStatus.MOVE);
+    }
+
     public String value() {
         return value;
     }
