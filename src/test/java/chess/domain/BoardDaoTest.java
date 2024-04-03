@@ -10,6 +10,7 @@ import chess.domain.position.File;
 import chess.domain.position.Rank;
 import chess.domain.position.Square;
 import chess.domain.state.TurnState;
+import chess.util.DatabaseConnector;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,14 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("보드 dao")
 public class BoardDaoTest {
-    private final BoardDao boardDao = new BoardDao();
-
-    @Test
-    public void connection() throws SQLException {
-        try (final var connection = boardDao.getConnection()) {
-            assertThat(connection).isNotNull();
-        }
-    }
+    private final BoardDao boardDao = new BoardDao(new DatabaseConnector());
 
     @DisplayName("보드의 첫 결과를 저장한다.")
     @Test

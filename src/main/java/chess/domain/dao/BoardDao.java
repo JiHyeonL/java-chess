@@ -9,6 +9,7 @@ import chess.domain.position.Rank;
 import chess.domain.position.Square;
 import chess.domain.state.Turn;
 import chess.domain.state.TurnState;
+import chess.util.DatabaseConnector;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,21 +19,11 @@ import java.util.Map;
 import java.util.Vector;
 
 public class BoardDao {
-    private static final String SERVER = "localhost:13306"; // MySQL 서버 주소
-    private static final String DATABASE = "chess"; // MySQL DATABASE 이름
-    private static final String OPTION = "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String USERNAME = "root"; //  MySQL 서버 아이디
-    private static final String PASSWORD = "root"; // MySQL 서버 비밀번호
 
-    public Connection getConnection() {
-        // 드라이버 연결
-        try {
-            return DriverManager.getConnection("jdbc:mysql://" + SERVER + "/" + DATABASE + OPTION, USERNAME, PASSWORD);
-        } catch (final SQLException e) {
-            System.err.println("DB 연결 오류:" + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
+    private final DatabaseConnector connector;
+
+    public BoardDao(DatabaseConnector connector) {
+        this.connector = connector;
     }
 
     public void addBoard(Board board) {
@@ -47,7 +38,7 @@ public class BoardDao {
     private void addSquareInfo(File file, Rank rank, Piece piece, TurnState turn) {
         final var query = "INSERT INTO chessboard (file_value, rank_value, piece_type, piece_color, turn) VALUES(?, ?, ?, ?, ?)";
 
-        try (final var connection = getConnection();
+        try (final var connection = connector.getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, file.symbol());
             preparedStatement.setInt(2, rank.value());
@@ -63,7 +54,7 @@ public class BoardDao {
 
     public Piece findPieceBySquare(File file, Rank rank) {
         final var query = "SELECT * FROM chessboard WHERE file_value = ? AND rank_value = ?";
-        try (final var connection = getConnection();
+        try (final var connection = connector.getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, file.symbol());
             preparedStatement.setInt(2, rank.value());
@@ -85,7 +76,7 @@ public class BoardDao {
     public boolean existBoard() {
         final var query = "SELECT COUNT(*) FROM chessboard";
 
-        try (final var connection = getConnection();
+        try (final var connection = connector.getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
 
             final var resultSet = preparedStatement.executeQuery();
@@ -104,7 +95,7 @@ public class BoardDao {
         final var query = "SELECT * FROM chessboard";
         final Map<Square, Piece> board = new HashMap<>();
 
-        try (final var connection = getConnection();
+        try (final var connection = connector.getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
 
             final var resultSet = preparedStatement.executeQuery();
@@ -123,7 +114,7 @@ public class BoardDao {
 
     public TurnState selectTurn() {
         final var query = "SELECT turn FROM chessboard";
-        try (final var connection = getConnection();
+        try (final var connection = connector.getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
 
             final var resultSet = preparedStatement.executeQuery();
@@ -152,7 +143,7 @@ public class BoardDao {
         final var query = "UPDATE chessboard SET piece_type = ?, piece_color = ? , turn = ?" +
                 "WHERE file_value = ? AND rank_value = ?";
 
-        try (final var connection = getConnection();
+        try (final var connection = connector.getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, newPieceType.name());
             preparedStatement.setString(2, newColorType.name());
@@ -169,7 +160,7 @@ public class BoardDao {
     public void deleteBoard() {
         final var query = "DELETE FROM chessboard";
 
-        try (final var connection = getConnection();
+        try (final var connection = connector.getConnection();
              final var preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.executeUpdate();
