@@ -80,7 +80,6 @@ public class Piece {
         return Score.value(pieceType);
     }
 
-    // TODO: 게터 없앨 방법 찾아보기
     public PieceType pieceType() {
         return pieceType;
     }
