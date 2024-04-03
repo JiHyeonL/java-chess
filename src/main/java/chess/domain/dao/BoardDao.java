@@ -7,16 +7,12 @@ import chess.domain.piece.PieceType;
 import chess.domain.position.File;
 import chess.domain.position.Rank;
 import chess.domain.position.Square;
-import chess.domain.state.Turn;
 import chess.domain.state.TurnState;
 import chess.util.DatabaseConnector;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 public class BoardDao {
 

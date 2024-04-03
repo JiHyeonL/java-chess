@@ -1,7 +1,5 @@
 package chess.domain.state;
 
-import chess.domain.board.Board;
-
 public enum TurnState {
     BLACK,
     WHITE,
